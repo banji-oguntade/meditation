@@ -13,6 +13,7 @@ import { validateJsonFile, normalizeCardItem } from "./utils/importValidation";
 import { useSyncCollectionsAndCards, useParseOAuthRedirect } from "./hooks/useSyncData";
 import { useSyncSessionNotes, useNotePersistence } from "./hooks/useNoteSync";
 import { useSessionTimer, getDashOffset } from "./hooks/useSessionControl";
+import { useVerseAudio } from "./hooks/useVerseAudio";
 
 // Import icons
 import {
@@ -23,7 +24,8 @@ import {
   CloseIcon,
   PlusIcon,
   TrashIcon,
-  EditIcon
+  EditIcon,
+  SpeakerIcon
 } from "./components/Icons";
 
 export default function App() {
@@ -108,6 +110,7 @@ export default function App() {
 
   // Use session control hooks
   useSessionTimer(activeSession, setActiveSession, collections, cards);
+  const { speak, stop, isSpeaking, isLoading } = useVerseAudio();
 
   // --- ACTIONS ---
   
@@ -1095,6 +1098,19 @@ export default function App() {
                       <p className="scripture-text">
                         "{currentCard.content}"
                       </p>
+                      <div style={{ marginTop: "20px", display: "flex", justifyContent: "center", gap: "8px" }}>
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          style={{ padding: "8px 14px", fontSize: "12px", display: "flex", alignItems: "center", gap: "6px", opacity: isLoading ? 0.6 : 1 }}
+                          onClick={() => isSpeaking ? stop() : speak(currentCard.content)}
+                          disabled={isLoading}
+                          title={isLoading ? "Generating audio..." : isSpeaking ? "Stop reading verse" : "Read verse aloud"}
+                        >
+                          <SpeakerIcon />
+                          {isLoading ? "Generating..." : isSpeaking ? "Stop Reading" : "Read Verse"}
+                        </button>
+                      </div>
                     </div>
 
                     {/* Circular Countdown Radial Timer */}

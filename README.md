@@ -6,10 +6,9 @@ A premium, distraction-free monastic web space designed to store, manage, and pl
 
 ## Key Features
 
-* **Bible Meditation Collections**: Group your scripture cards into logical themes (e.g., *Healing Scriptures*, *Peace & Stillness*, *Strength & Courage*). Customize each collection with its own color theme, countdown timing, and background music.
+* **Bible Meditation Collections**: Group your scripture cards into logical themes (e.g., *Healing Scriptures*, *Peace & Stillness*, *Strength & Courage*). Customize each collection with its own color theme and countdown timing.
 * **Auto-Play Slideshow Mode**: Displays scripture verses sequentially. It counts down with an elegant SVG circular progress timer and advances to the next verse automatically once the timer reaches zero.
-* **Ambient Synthesizer (Celestial Pad)**: Generates soft, evolving pentatonic ambient chords natively in your browser using the **Web Audio API**. It works completely offline and requires zero network requests or heavy audio files.
-* **Audio Preset Loops**: Includes built-in support for ambient presets (Lofi, Acoustic Guitar, Streams) as well as custom external MP3/WAV links.
+* **Text-to-Speech Verse Playback**: Click the speaker icon to hear each verse read aloud using high-quality AI voices via **ElevenLabs** API. Natural, meditative pacing for deeper scripture engagement.
 * **Live Reflection Journaling**: Write and edit personal notes for each card directly inside the slideshow player while the scripture is displayed. Notes save automatically to `localStorage` as you type.
 * **Collection Card CRUD**: Fully editable structure. Click the settings icon (`⚙`) on any collection to add cards, modify content, delete cards, or adjust slide timeouts.
 
@@ -42,6 +41,35 @@ npm run build
 ```
 The compiled, optimized HTML/JS/CSS assets will be written to the `dist` directory.
 
+### ElevenLabs Text-to-Speech Setup
+To enable verse playback via text-to-speech:
+
+1. **Get Your API Key**:
+   - Visit [ElevenLabs](https://elevenlabs.io) and sign up for a free account
+   - Free tier includes **10,000 characters/month** (typically ~50-100 verses)
+   - Copy your API key from the settings page
+
+2. **Configure Your Environment**:
+   - Create a `.env` file in the project root:
+     ```
+     VITE_ELEVENLABS_API_KEY=your_api_key_here
+     ```
+   - Or copy `.env.example` to `.env` and add your key:
+     ```bash
+     cp .env.example .env
+     ```
+
+3. **Restart Development Server**:
+   ```bash
+   npm run dev
+   ```
+   The environment variable will be loaded automatically.
+
+4. **During Meditation**:
+   - Click the 🔊 **Read Verse** button below any scripture to hear it read aloud
+   - Click **Stop Reading** to cancel playback
+   - Voice: Rachel (calm, meditative pacing)
+
 ---
 
 ## How to Use
@@ -50,7 +78,7 @@ The compiled, optimized HTML/JS/CSS assets will be written to the `dist` directo
 * Click **Create Collection** in the top right.
 * Name your collection (e.g., "Peace & Rest").
 * Choose a **Color Theme** (e.g., Peace, Hope, Love) which will determine the visual gradient and glow during your meditation session.
-* Select a **Music Option** (e.g., *Celestial Pad (Synth)*) and a **Default Timeout** in seconds (e.g., `30` seconds per card).
+* Set a **Default Timeout** in seconds (e.g., `30` seconds per card).
 * Click **Save Changes**.
 
 ### 2. Managing Meditation Cards
@@ -64,7 +92,7 @@ The compiled, optimized HTML/JS/CSS assets will be written to the `dist` directo
 ### 3. Running a Meditation Session
 * Click **Play Collection** on any card.
 * The player will fill the viewport with your collection's custom color glow.
-* Ambient background music will begin playing.
+* Scripture verses display with an elegant circular countdown timer.
 * Use the playback controls at the bottom to:
   * **Pause/Play**: Halt or resume the automated slide countdown.
   * **Skip Back/Forward**: Manually advance or return to a verse.
