@@ -1,0 +1,13 @@
+[
+  {
+    "title": "",
+    "message": 123,
+    "collections": "Test Collection",
+    "timeout": -5,
+    "notes": ["not a string"]
+  },
+  {
+    "verse": "Verse only",
+    "content": "Content only"
+  }
+]
