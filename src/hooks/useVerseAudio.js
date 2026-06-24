@@ -3,9 +3,10 @@ import { useState, useCallback, useRef } from "react";
 /**
  * Hook: Text-to-Speech for verse content using ElevenLabs API
  * Requires VITE_ELEVENLABS_API_KEY environment variable
+ * Uses eleven_v3 model (most expressive)
  */
 const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY || "";
-const ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"; // Rachel voice (calm, clear)
+const ELEVENLABS_VOICE_ID = "JBFqnCBsd6RMkjVDRZzb"; // George voice (calm, clear)
 
 export function useVerseAudio() {
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -41,11 +42,8 @@ export function useVerseAudio() {
           },
           body: JSON.stringify({
             text: text,
-            model_id: "eleven_monolingual_v1",
-            voice_settings: {
-              stability: 0.5,
-              similarity_boost: 0.75,
-            },
+            model_id: "eleven_v3",
+            output_format: "mp3_44100_128",
           }),
         }
       );
