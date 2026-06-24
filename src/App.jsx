@@ -110,7 +110,7 @@ export default function App() {
 
   // Use session control hooks
   useSessionTimer(activeSession, setActiveSession, collections, cards);
-  const { speak, stop, isSpeaking, isLoading } = useVerseAudio();
+  const { speak, stop, isSpeaking, isLoading } = useVerseAudio(user);
 
   // --- ACTIONS ---
   
