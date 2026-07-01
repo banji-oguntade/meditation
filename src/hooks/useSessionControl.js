@@ -3,7 +3,7 @@ import { useEffect, useRef, useCallback } from "react";
 /**
  * Hook: Manage slideshow timer and card advancement
  */
-export function useSessionTimer(activeSession, setActiveSession, collections, cards) {
+export function useSessionTimer(activeSession, setActiveSession, collections, cards, disableCountdown = false, loopCollection = false) {
   const timerRef = useRef(null);
 
   // Memoized update function to prevent unnecessary re-creates
@@ -27,6 +27,37 @@ export function useSessionTimer(activeSession, setActiveSession, collections, ca
           };
         } else {
           // End of collection reached!
+          if (loopCollection) {
+            const firstCard = colCards[0];
+            const col = collections.find(c => c.id === prev.collectionId);
+            const limit = firstCard.timeout || col.defaultTimeout || 30;
+            return {
+              ...prev,
+              currentCardIndex: 0,
+              timeRemaining: limit,
+              maxTime: limit
+            };
+          }
+
+          if (prev.remainingCollectionIds && prev.remainingCollectionIds.length > 0) {
+            const nextColId = prev.remainingCollectionIds[0];
+            const nextCol = collections.find(c => c.id === nextColId);
+            const nextColCards = cards.filter(c => c.collectionId === nextColId);
+            
+            if (nextCol && nextColCards.length > 0) {
+              const firstCard = nextColCards[0];
+              const limit = firstCard.timeout || nextCol.defaultTimeout || 30;
+              return {
+                ...prev,
+                collectionId: nextColId,
+                currentCardIndex: 0,
+                timeRemaining: limit,
+                maxTime: limit,
+                remainingCollectionIds: prev.remainingCollectionIds.slice(1)
+              };
+            }
+          }
+
           clearInterval(timerRef.current);
           return {
             ...prev,
@@ -41,10 +72,10 @@ export function useSessionTimer(activeSession, setActiveSession, collections, ca
         };
       }
     });
-  }, [collections, cards]);
+  }, [collections, cards, loopCollection]);
 
   useEffect(() => {
-    if (!activeSession || !activeSession.isPlaying || activeSession.isComplete) {
+    if (!activeSession || !activeSession.isPlaying || activeSession.isComplete || disableCountdown) {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
     }
@@ -54,7 +85,7 @@ export function useSessionTimer(activeSession, setActiveSession, collections, ca
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [activeSession?.isPlaying, activeSession?.isComplete, handleTimerTick]);
+  }, [activeSession?.isPlaying, activeSession?.isComplete, handleTimerTick, disableCountdown]);
 }
 
 /**

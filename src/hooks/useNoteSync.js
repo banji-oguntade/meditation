@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { doc, setDoc } from "firebase/firestore";
-import { db, isFirebaseEnabled } from "../utils/firebase";
+import { db, isCloudEnabled } from "../utils/firebase";
 
 /**
  * Hook: Persist session notes to Firestore or sync state
@@ -10,7 +10,7 @@ export function useNotePersistence(currentCardId, sessionNotes, cards, setCards,
   const persistNotes = useCallback(async (cardId, updatedNotes) => {
     setCards(prevCards => prevCards.map(c => c.id === cardId ? { ...c, notes: updatedNotes } : c));
 
-    if (isFirebaseEnabled && user) {
+    if (isCloudEnabled(user)) {
       try {
         const cardRef = doc(db, "users", user.email, "cards", cardId);
         await setDoc(cardRef, { notes: updatedNotes }, { merge: true });

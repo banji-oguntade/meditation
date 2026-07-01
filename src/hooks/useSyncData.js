@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
-import { db, isFirebaseEnabled } from "../utils/firebase";
+import { db, isCloudEnabled } from "../utils/firebase";
 import {
   getStoredCollections,
   getStoredCards,
@@ -22,7 +22,7 @@ export function useSyncCollectionsAndCards(user, collections, setCollections, ca
       return;
     }
 
-    if (isFirebaseEnabled) {
+    if (isCloudEnabled(user)) {
       // Real-time Firestore Sync
       const collectionsRef = collection(db, "users", user.email, "collections");
       const cardsRef = collection(db, "users", user.email, "cards");
@@ -63,7 +63,7 @@ export function useSyncCollectionsAndCards(user, collections, setCollections, ca
 
   // Persist collections locally when they change (only in local mode)
   useEffect(() => {
-    if (user && !isFirebaseEnabled) {
+    if (user && !isCloudEnabled(user)) {
       const emailSuffix = sanitizeEmailForKey(user.email);
       saveStoredCollections(emailSuffix, collections);
     }
@@ -71,7 +71,7 @@ export function useSyncCollectionsAndCards(user, collections, setCollections, ca
 
   // Persist cards locally when they change (only in local mode)
   useEffect(() => {
-    if (user && !isFirebaseEnabled) {
+    if (user && !isCloudEnabled(user)) {
       const emailSuffix = sanitizeEmailForKey(user.email);
       saveStoredCards(emailSuffix, cards);
     }
